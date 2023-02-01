@@ -86,50 +86,9 @@ $(document).on("click", ".dropdown-select .option", function (event) {
     .prev("select")
     .val($(this).data("value"))
     .trigger("change");
-});
 
-// Keyboard events
-$(document).on("keydown", ".dropdown-select", function (event) {
-  var focused_option = $(
-    $(this).find(".list .option:focus")[0] ||
-      $(this).find(".list .option.selected")[0]
-  );
-  // Space or Enter
-  //if (event.keyCode == 32 || event.keyCode == 13) {
-  if (event.keyCode == 13) {
-    if ($(this).hasClass("open")) {
-      focused_option.trigger("click");
-    } else {
-      $(this).trigger("click");
-    }
-    return false;
-    // Down
-  } else if (event.keyCode == 40) {
-    if (!$(this).hasClass("open")) {
-      $(this).trigger("click");
-    } else {
-      focused_option.next().focus();
-    }
-    return false;
-    // Up
-  } else if (event.keyCode == 38) {
-    if (!$(this).hasClass("open")) {
-      $(this).trigger("click");
-    } else {
-      var focused_option = $(
-        $(this).find(".list .option:focus")[0] ||
-          $(this).find(".list .option.selected")[0]
-      );
-      focused_option.prev().focus();
-    }
-    return false;
-    // Esc
-  } else if (event.keyCode == 27) {
-    if ($(this).hasClass("open")) {
-      $(this).trigger("click");
-    }
-    return false;
-  }
+  // API Call
+  const countryCode = $(this).data("value"))
 });
 
 $(document).ready(function () {
