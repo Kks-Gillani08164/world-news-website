@@ -11553,3 +11553,31 @@ footer .footer-logo {
 #select-country .dropdown-select a:hover {
   color: #666;
 }
+
+.world_news_card {
+  width: 400px;
+  margin: 10px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border-radius: 10px;
+}
+
+.world_news_card_total {
+  border: 1px solid #dcdbdb;
+  padding: .2rem .6rem;
+  border-radius: 20px;
+  color: #d0d0d0;
+  font-size: 14px;
+}
+
+.world_news_card_category {
+  border: 1px solid #b4fcfc;
+  padding: .2rem .6rem;
+  border-radius: 20px;
+  color: #9deeee;
+  font-size: 14px;
+}
+
+.world_news_card_date {
+font-size:14px;
+  color: #d0d0d0;
+}
