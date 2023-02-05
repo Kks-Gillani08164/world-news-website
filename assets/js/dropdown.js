@@ -76,11 +76,13 @@ function filter() {
 
 // Search
 let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+let nextPageId = ''
 async function getapi(url) {
     // Storing response
     const response = await fetch(url);
     // Storing data in form of JSON
-    const {results} = await response.json();
+    const {results,nextPage} = await response.json()
+    nextPageId = nextPage
 
     let template = ''
     results.forEach(news => {
@@ -104,6 +106,7 @@ async function getapi(url) {
 }
 
 // Option click
+let code = ''
 $(document).on("click", ".dropdown-select .option", function (event) {
     $(this).closest(".list").find(".selected").removeClass("selected");
     $(this).addClass("selected");
@@ -117,10 +120,18 @@ $(document).on("click", ".dropdown-select .option", function (event) {
 
     // API Call
     const countryCode = $(this).data("value")
+    code = countryCode
     const api_url =
         `https://newsdata.io/api/1/news?apikey=pub_15219c58e95ac7a128b0c6e40fc36fce1357d&country=${countryCode}&category=science,sports,technology,top,world`
     getapi(api_url)
 });
+
+document.getElementById('load_more').addEventListener('click', function () {
+    const api_url =
+        `https://newsdata.io/api/1/news?apikey=pub_15219c58e95ac7a128b0c6e40fc36fce1357d&country=${code || 'au'}&category=science,sports,technology,top,world&&page=${nextPageId}`
+    console.log(api_url)
+    getapi(api_url)
+})
 
 $(window).on('load', function(){
     // API Call
