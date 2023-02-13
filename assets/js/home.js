@@ -25,8 +25,8 @@ $(function () {
 
 // Carousel
 
-var api_url = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&apiKey=9b0c5f77afb34a33b22cda3433662b79`;
-
+// var api_url = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&apiKey=9b0c5f77afb34a33b22cda3433662b79`;
+var api_url = `https://api.worldnewsapi.com/search-news?api-key=b823a232880040858c927e497fa5a574`
 async function getapi(url) {
   // Storing response
   const response = await fetch(url);
@@ -37,11 +37,14 @@ async function getapi(url) {
 // Calling that async function
 var carousel = $("#main-banner-carousel");
 getapi(api_url).then((data) => {
+  console.log(data)
   let template = "";
-  var items = show(data.articles);
+  var items = show(data.news);
+  console.log(items)
   for (var item of items) {
     template += item;
   }
+
   carousel.trigger("destroy.owl.carousel");
   carousel.find(".owl-stage-outer").children().unwrap();
   carousel.removeClass("owl-center owl-loaded owl-text-select-on");
@@ -98,30 +101,26 @@ function show(data) {
               ${data[i].title}
             </h2>
             <h5 class="font-weight-normal m-0">
-              ${
-                data[i].description.length > 80
-                  ? `${data[i].description.substr(0, 80)}...`
-                  : data[i].description
-              }
+                
             </h5>
             <p class="text-color m-0 pt-2 d-flex align-items-center">
             <i class="mdi mdi-open-source-initiative mr-2"></i>
-              <span class="fs-10 mr-5">${data[i].source.name}</span>
+              <span class="fs-10 mr-5"></span>
               <i class="mdi mdi-calendar mr-2"></i>
               <span class="fs-10 mr-1">${month} ${day} , ${year}</span>
             </p>
           </div>
           <div class="carousel-image">
             <img src="${
-              data[i].urlToImage
-                ? data[i].urlToImage
+              data[i].image
+                ? data[i].image
                 : "https://via.placeholder.com/728x380.png"
             }" alt="" height="100%"/>
           </div>
         </div>
       </div>
     `;
-      if (data[i].urlToImage) {
+      if (data[i].image) {
         items.push(item);
       }
     }

@@ -89,6 +89,7 @@ async function getapi(url) {
         if(news.pubDate && news.creator && news.category && news.title) {
             const date = new Date(news?.pubDate)
             const item = `
+        <a href='${news.link}' target="_blank">
         <div class="world_news_card">
             <div class="d-flex justify-content-between px-5 mt-4 mb-2">
               <p class="world_news_card_total">${news.creator[0]}</p>
@@ -97,6 +98,7 @@ async function getapi(url) {
            <h3 class="px-4">${news?.title.length > 67 ? `${news?.title.substr(0, 67)}...` : news?.title}</h3>
            <p class="px-4 mb-4 world_news_card_date">${new Intl.DateTimeFormat('en-US', dateOptions).format(date)}</p>
         </div>
+        </a>
         `
             template += item
         }
