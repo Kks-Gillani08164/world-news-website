@@ -25,21 +25,32 @@ $(function () {
 
 // Carousel
 
+
+
+
 // var api_url = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&apiKey=9b0c5f77afb34a33b22cda3433662b79`;
-var api_url = `https://api.worldnewsapi.com/search-news?api-key=b823a232880040858c927e497fa5a574`
-async function getapi(url) {
-  // Storing response
-  const response = await fetch(url);
-  // Storing data in form of JSON
-  var data = await response.json();
-  return data;
+
+async function getapi(options) {
+  return axios.request(options).then(function (response) {
+    return response.data
+  }).catch(function (error) {
+    return error
+  });
 }
 // Calling that async function
 var carousel = $("#main-banner-carousel");
-getapi(api_url).then((data) => {
-  console.log(data)
+var options = {
+  method: 'GET',
+  url: 'https://api.newscatcherapi.com/v2/search',
+  params: {q: 'Sports', lang: 'en', sort_by: 'relevancy', page: '1'},
+  headers: {
+    'x-api-key': 'Ng18KsuCHLvYztP-gx8x9_h4E7YxClMhz1itacLE7dU'
+  }
+};
+getapi(options).then((data) => {
+  console.log('Data', data)
   let template = "";
-  var items = show(data.news);
+  var items = show(data.articles);
   console.log(items)
   for (var item of items) {
     template += item;
@@ -88,7 +99,7 @@ function show(data) {
         "November",
         "December",
       ];
-      var date = new Date(data[i].publishedAt);
+      var date = new Date(data[i].published_date);
       var day = date.getDate();
       var month = months[date.getMonth()];
       var year = date.getFullYear();
@@ -101,26 +112,30 @@ function show(data) {
               ${data[i].title}
             </h2>
             <h5 class="font-weight-normal m-0">
-                
+                ${
+          data[i].summary.length > 80
+              ? `${data[i].summary.substr(0, 80)}...`
+              : data[i].summary
+      }
             </h5>
             <p class="text-color m-0 pt-2 d-flex align-items-center">
             <i class="mdi mdi-open-source-initiative mr-2"></i>
-              <span class="fs-10 mr-5"></span>
+              <span class="fs-10 mr-5">${data[i].author}</span>
               <i class="mdi mdi-calendar mr-2"></i>
               <span class="fs-10 mr-1">${month} ${day} , ${year}</span>
             </p>
           </div>
           <div class="carousel-image">
             <img src="${
-              data[i].image
-                ? data[i].image
+              data[i].media
+                ? data[i].media
                 : "https://via.placeholder.com/728x380.png"
             }" alt="" height="100%"/>
           </div>
         </div>
       </div>
     `;
-      if (data[i].image) {
+      if (data[i].media) {
         items.push(item);
       }
     }
