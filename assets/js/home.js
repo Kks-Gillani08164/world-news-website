@@ -25,37 +25,46 @@ $(function () {
 
 // Carousel
 
-
-
-
 // var api_url = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&apiKey=9b0c5f77afb34a33b22cda3433662b79`;
+var api_url = `https://gnews.io/api/v4/search?q=example&lang=en&country=us&max=10&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
 
-async function getapi(options) {
-  return axios.request(options).then(function (response) {
-    return response.data
-  }).catch(function (error) {
-    return error
-  });
+async function getapi(url) {
+  // Storing response
+  const response = await fetch(url);
+  // Storing data in form of JSON
+  var data = await response.json();
+  return data;
 }
-// Calling that async function
-var carousel = $("#main-banner-carousel");
-var options = {
-  method: 'GET',
-  url: 'https://api.newscatcherapi.com/v2/search',
-  params: {q: 'Sports', lang: 'en', sort_by: 'relevancy', page: '1'},
-  headers: {
-    'x-api-key': 'Ng18KsuCHLvYztP-gx8x9_h4E7YxClMhz1itacLE7dU'
-  }
-};
-getapi(options).then((data) => {
-  console.log('Data', data)
+
+// async function getapi(options) {
+//   return axios
+//     .get(options)
+//     .then(function (response) {
+//       return response.data;
+//     })
+//     .catch(function (error) {
+//       return error;
+//     });
+// }
+// // Calling that async function
+// var carousel = $("#main-banner-carousel");
+// var options = {
+//   method: "GET",
+//   url: "https://api.newscatcherapi.com/v2/search",
+//   params: { q: "Sports", lang: "en", sort_by: "relevancy", page: "1" },
+//   headers: {
+//     "x-api-key": "Ng18KsuCHLvYztP-gx8x9_h4E7YxClMhz1itacLE7dU",
+//   },
+// };
+
+getapi(api_url).then((data) => {
   let template = "";
   var items = show(data.articles);
-  console.log(items)
   for (var item of items) {
     template += item;
   }
 
+var carousel = $("#main-banner-carousel");
   carousel.trigger("destroy.owl.carousel");
   carousel.find(".owl-stage-outer").children().unwrap();
   carousel.removeClass("owl-center owl-loaded owl-text-select-on");
@@ -99,24 +108,28 @@ function show(data) {
         "November",
         "December",
       ];
-      var date = new Date(data[i].published_date);
+      var date = new Date(data[i].publishedAt);
       var day = date.getDate();
       var month = months[date.getMonth()];
       var year = date.getFullYear();
 
       var item = `
       <div class="item">
-        <div class="carousel-content-wrapper mb-2">
-          <div class="carousel-content">
+        <div class="carousel-content-wrapper">
+          <div class="w-75 carousel-content p-3">
             <h2 class="font-weight-bold">
-              ${data[i].title}
+              ${
+                data[i].title.length > 60
+                  ? `${data[i].title.substr(0, 60)}...`
+                  : data[i].title
+              }
             </h2>
             <h5 class="font-weight-normal m-0">
                 ${
-          data[i].summary.length > 80
-              ? `${data[i].summary.substr(0, 80)}...`
-              : data[i].summary
-      }
+                  data[i].description.length > 80
+                    ? `${data[i].description.substr(0, 80)}...`
+                    : data[i].description
+                }
             </h5>
             <p class="text-color m-0 pt-2 d-flex align-items-center">
             <i class="mdi mdi-open-source-initiative mr-2"></i>
@@ -127,15 +140,15 @@ function show(data) {
           </div>
           <div class="carousel-image">
             <img src="${
-              data[i].media
-                ? data[i].media
+              data[i].image
+                ? data[i].image
                 : "https://via.placeholder.com/728x380.png"
             }" alt="" height="100%"/>
           </div>
         </div>
       </div>
     `;
-      if (data[i].media) {
+      if (data[i].image) {
         items.push(item);
       }
     }
@@ -192,8 +205,10 @@ getapi(latest_news).then((data) => {
   document.getElementById("carousel-right").innerHTML = template;
 });
 
-const world_news =
-  "https://newsapi.org/v2/everything?q=art&apiKey=9b0c5f77afb34a33b22cda3433662b79&pageSize=20";
+// const world_news =
+//   "https://newsapi.org/v2/everything?q=art&apiKey=9b0c5f77afb34a33b22cda3433662b79&pageSize=20";
+
+var world_news = `https://gnews.io/api/v4/search?q=sports&lang=en&country=uk&max=10&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
 
 getapi(world_news).then((data) => {
   let template = "";
@@ -201,9 +216,7 @@ getapi(world_news).then((data) => {
   let count = 0;
   for (let i = 0; i < results.length; i++) {
     if (
-      results[i].urlToImage &&
-      results[i].author &&
-      !results[i].urlToImage.includes("i.kinja-img.com")
+      results[i].image
     ) {
       const item = `
         <div class="col-lg-3 col-sm-6 grid-margin mb-5 mb-sm-2">
@@ -212,15 +225,15 @@ getapi(world_news).then((data) => {
             results[i].url
           }" class="d-block text-decoration-none text-dark" target="_blank">
             <img
-              src="${results[i].urlToImage}"
-              class="mh-100"
+              src="${results[i].image}"
+              class="img-fluid"
               alt="world-news"
             />
             </a>
             <span class="thumb-title">${
-              results[i].author.length > 17
-                ? `${results[i].author.substr(0, 17)} ...`
-                : `${results[i].author}`
+              results[i].source.name.length > 17
+                ? `${results[i].source.name.substr(0, 17)} ...`
+                : `${results[i].source.name}`
             }</span>
           </div>
           <h5 class="font-weight-bold mt-3">
@@ -255,17 +268,16 @@ getapi(world_news).then((data) => {
   document.getElementById("world_news").innerHTML = template;
 });
 
-const top_headlines =
-  "https://newsapi.org/v2/top-headlines?country=us&apiKey=9b0c5f77afb34a33b22cda3433662b79&pageSize=25";
+// const top_headlines =
+//   "https://newsapi.org/v2/top-headlines?country=us&apiKey=9b0c5f77afb34a33b22cda3433662b79&pageSize=25";
+
+var top_headlines = `https://gnews.io/api/v4/search?q=politics&lang=en&country=us&max=100&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
 
 getapi(top_headlines).then(({ articles }) => {
   let template = "";
   let count = 0;
-  for (let i = 2; i < 11; i++) {
     if (
-      articles[i].urlToImage &&
-      articles[i].author &&
-      !articles[i].urlToImage.includes("i.kinja-img.com") &&
+      articles[0].image &&
       count === 0
     ) {
       const popular_news = `
@@ -274,7 +286,7 @@ getapi(top_headlines).then(({ articles }) => {
                   articles[0].url
                 }" class="d-block text-decoration-none text-dark" target="_blank">
                   <img
-                    src="${articles[0].urlToImage}"
+                    src="${articles[0].image}"
                     class="img-fluid"
                     alt="world-news"
                   />
@@ -298,13 +310,11 @@ getapi(top_headlines).then(({ articles }) => {
       document.getElementById("popular_news_right").innerHTML = popular_news;
       count++;
     }
-  }
+
   count = 0;
-  for (let i = 2; i < 11; i++) {
+  for (let i = 2; i < articles.length; i++) {
     if (
-      articles[i].urlToImage &&
-      articles[i].author &&
-      !articles[i].urlToImage.includes("i.kinja-img.com")
+      articles[i].image
     ) {
       let item = `
       ${count % 2 === 0 ? '<div class="row">' : ""}
@@ -314,16 +324,16 @@ getapi(top_headlines).then(({ articles }) => {
               articles[i].url
             }" class="d-block text-decoration-none text-dark" target="_blank">
               <img
-                src="${articles[i].urlToImage}"
+                src="${articles[i].image}"
                 class="img-fluid"
                 alt="world-news"
                 />
                 </a>
               <span class="thumb-title">
               ${
-                articles[i].author.length > 17
-                  ? `${articles[i].author.substr(0, 17)} ...`
-                  : `${articles[i].author}`
+                articles[i].source.name.length > 17
+                  ? `${articles[i].source.name.substr(0, 17)} ...`
+                  : `${articles[i].source.name}`
               }</span>
             </div>
             <h5 class="font-weight-600 mt-3">
@@ -350,14 +360,18 @@ getapi(top_headlines).then(({ articles }) => {
     }
   }
   document.getElementById("popular_news_left").innerHTML = template;
-  template = "";
-  count = 0;
+});
 
-  for (let i = 12; i < articles.length; i++) {
+var editor = `https://gnews.io/api/v4/search?q=technology&lang=en&country=uk&max=100&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
+
+getapi(editor).then(({ articles }) => {
+  let template = "";
+  let count = 0;
+  console.log('technology', articles)
+
+  for (let i = 0; i < articles.length; i++) {
     if (
-      articles[i].urlToImage &&
-      articles[i].author &&
-      !articles[i].urlToImage.includes("i.kinja-img.com")
+      articles[i].image
     ) {
       let item = `
       ${count === 0 || count === 3 ? '<div class="row">' : ""}
@@ -367,15 +381,15 @@ getapi(top_headlines).then(({ articles }) => {
                       articles[i].url
                     }" class="d-block text-decoration-none text-dark" target="_blank">
                       <img
-                        src="${articles[i].urlToImage}"
-                        class="mh-100"
+                        src="${articles[i].image}"
+                        class="img-fluid"
                         alt="world-news"
                       />
                       </a>
                       <span class="thumb-title">${
-                        articles[i].author.length > 17
-                          ? `${articles[i].author.substr(0, 17)} ...`
-                          : `${articles[i].author}`
+                        articles[i].source.name.length > 17
+                          ? `${articles[i].source.name.substr(0, 17)} ...`
+                          : `${articles[i].source.name}`
                       }</span>
                     </div>
                     <h5 class="font-weight-600 mt-3">
@@ -395,4 +409,4 @@ getapi(top_headlines).then(({ articles }) => {
     }
   }
   document.getElementById("editor_choice").innerHTML = template;
-});
+})
