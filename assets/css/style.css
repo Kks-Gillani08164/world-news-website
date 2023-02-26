@@ -11564,18 +11564,26 @@ footer .footer-logo {
   margin: 10px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   border-radius: 10px;
+
+
+  transition: all 1s;
+  background-color: white;
+}
+
+.world_news_card:hover {
+  background-color: #f1f1f1;
 }
 
 .world_news_card_total {
   border: 1px solid #dcdbdb;
   padding: .2rem .6rem;
   border-radius: 20px;
-  color: #d0d0d0;
+  color: #a8a8a8;
   font-size: 14px;
 }
 
 .world_news_card_category {
-  border: 1px solid #b4fcfc;
+  border: 1px solid #9ffcfc;
   padding: .2rem .6rem;
   border-radius: 20px;
   color: #9deeee;
@@ -11584,5 +11592,16 @@ footer .footer-logo {
 
 .world_news_card_date {
 font-size:14px;
-  color: #d0d0d0;
+  color: #a8a8a8;
+}
+
+#load_more {
+  padding: 0.5rem 2rem;
+  border-radius: 5px;
+  font-weight: bold;
+  background-color: transparent;
+}
+
+#load_more:hover {
+  text-decoration: underline;
 }

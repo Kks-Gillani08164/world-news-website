@@ -7,14 +7,14 @@ function create_custom_dropdowns() {
                 ($(this).attr("class") || "") +
                 '" tabindex="0"><span class="current"></span><div class="list"><ul></ul></div></div>'
             );
-            var dropdown = $(this).next();
-            var options = $(select).find("option");
-            var selected = $(this).find("option:selected");
+            const dropdown = $(this).next();
+            const options = $(select).find("option");
+            const selected = $(this).find("option:selected");
             dropdown
                 .find(".current")
                 .html(selected.data("display-text") || selected.text());
             options.each(function (j, o) {
-                var display = $(o).data("display-text") || "";
+                const display = $(o).data("display-text") || "";
                 dropdown
                     .find("ul")
                     .append(
@@ -38,7 +38,6 @@ function create_custom_dropdowns() {
 }
 
 // Event listeners
-
 // Open/close
 $(document).on("click", ".dropdown-select", function (event) {
     if ($(event.target).hasClass("dd-searchbox")) {
@@ -65,9 +64,9 @@ $(document).on("click", function (event) {
 });
 
 function filter() {
-    var valThis = $("#txtSearchValue").val();
+    const valThis = $("#txtSearchValue").val();
     $(".dropdown-select ul > li").each(function () {
-        var text = $(this).text();
+        let text = $(this).text();
         text.toLowerCase().indexOf(valThis.toLowerCase()) > -1
             ? $(this).show()
             : $(this).hide();
@@ -89,8 +88,8 @@ async function getapi(url) {
         if(news.pubDate && news.creator && news.category && news.title) {
             const date = new Date(news?.pubDate)
             const item = `
-        <a href='${news.link}' target="_blank">
-        <div class="world_news_card">
+        <a href='${news.link}' target="_blank" class="text-decoration-none text-dark world_news_card_wrapper">
+        <div class="world_news_card py-2">
             <div class="d-flex justify-content-between px-5 mt-4 mb-2">
               <p class="world_news_card_total">${news.creator[0]}</p>
               <p class="world_news_card_category text-capitalize">${news.category[0]}</p>
@@ -103,7 +102,6 @@ async function getapi(url) {
             template += item
         }
     })
-
     document.getElementById('world_news_live').innerHTML = template || 'No news found ...'
 }
 
@@ -112,7 +110,7 @@ let code = ''
 $(document).on("click", ".dropdown-select .option", function (event) {
     $(this).closest(".list").find(".selected").removeClass("selected");
     $(this).addClass("selected");
-    var text = $(this).data("display-text") || $(this).text();
+    let text = $(this).data("display-text") || $(this).text();
     $(this).closest(".dropdown-select").find(".current").text(text);
     $(this)
         .closest(".dropdown-select")
@@ -131,7 +129,6 @@ $(document).on("click", ".dropdown-select .option", function (event) {
 document.getElementById('load_more').addEventListener('click', function () {
     const api_url =
         `https://newsdata.io/api/1/news?apikey=pub_15219c58e95ac7a128b0c6e40fc36fce1357d&country=${code || 'au'}&category=science,sports,technology,top,world&&page=${nextPageId}`
-    console.log(api_url)
     getapi(api_url)
 })
 

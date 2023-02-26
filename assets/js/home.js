@@ -1,70 +1,30 @@
-$(function () {
-  // owl carousel script starts
-  if ($("#main-banner-carousel").length) {
-    $("#main-banner-carousel").owlCarousel({
-      loop: true,
-      autoplay: true,
-      autoplayTimeout: 3000,
-      autoplaySpeed: 2000,
-      autoplayHoverPause: true,
-      autoWidth: false,
-      dots: true,
-      margin: 0,
-      responsiveClass: true,
-      responsive: {
-        0: {
-          items: 1,
-        },
-        320: {
-          items: 1,
-        },
-      },
-    });
-  }
-});
-
 // Carousel
+const api_url = `https://gnews.io/api/v4/search?q=example&lang=en&country=us&max=10&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
+// Carousel Right Side
+const latest_news = `https://newsdata.io/api/1/news?apikey=pub_15219c58e95ac7a128b0c6e40fc36fce1357d&language=en`;
+const world_news = `https://gnews.io/api/v4/search?q=sports&lang=en&country=uk&max=10&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
+const top_headlines = `https://gnews.io/api/v4/search?q=politics&lang=en&country=us&max=100&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
+const editor = `https://gnews.io/api/v4/search?q=technology&lang=en&country=uk&max=100&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
 
-// var api_url = `https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&apiKey=9b0c5f77afb34a33b22cda3433662b79`;
-var api_url = `https://gnews.io/api/v4/search?q=example&lang=en&country=us&max=10&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
-
+// Function to get Data from the API
 async function getapi(url) {
   // Storing response
   const response = await fetch(url);
   // Storing data in form of JSON
-  var data = await response.json();
+  const data = await response.json();
   return data;
 }
 
-// async function getapi(options) {
-//   return axios
-//     .get(options)
-//     .then(function (response) {
-//       return response.data;
-//     })
-//     .catch(function (error) {
-//       return error;
-//     });
-// }
-// // Calling that async function
-// var carousel = $("#main-banner-carousel");
-// var options = {
-//   method: "GET",
-//   url: "https://api.newscatcherapi.com/v2/search",
-//   params: { q: "Sports", lang: "en", sort_by: "relevancy", page: "1" },
-//   headers: {
-//     "x-api-key": "Ng18KsuCHLvYztP-gx8x9_h4E7YxClMhz1itacLE7dU",
-//   },
-// };
-
+// Call API and create Carousel on Home Page
 getapi(api_url).then((data) => {
   let template = "";
-  var items = show(data.articles);
-  for (var item of items) {
+  const items = show(data.articles);
+  for (let item of items) {
     template += item;
   }
 
-var carousel = $("#main-banner-carousel");
+  // This Code is responsible for Creating Carousel
+const carousel = $("#main-banner-carousel");
   carousel.trigger("destroy.owl.carousel");
   carousel.find(".owl-stage-outer").children().unwrap();
   carousel.removeClass("owl-center owl-loaded owl-text-select-on");
@@ -90,30 +50,14 @@ var carousel = $("#main-banner-carousel");
   });
 });
 
+
+// This Function receive data and return html element for carousel to show
 function show(data) {
   const items = [];
   if (items.length < 4) {
-    for (var i = 0; i < 4; i++) {
-      var months = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ];
-      var date = new Date(data[i].publishedAt);
-      var day = date.getDate();
-      var month = months[date.getMonth()];
-      var year = date.getFullYear();
-
-      var item = `
+    for (let i = 0; i < 4; i++) {
+      const date = new Date(data[i].publishedAt);
+      let item = `
       <div class="item">
         <div class="carousel-content-wrapper">
           <div class="w-75 carousel-content p-3">
@@ -135,7 +79,7 @@ function show(data) {
             <i class="mdi mdi-open-source-initiative mr-2"></i>
               <span class="fs-10 mr-5">${data[i].author}</span>
               <i class="mdi mdi-calendar mr-2"></i>
-              <span class="fs-10 mr-1">${month} ${day} , ${year}</span>
+              <span class="fs-10 mr-1">${new Intl.DateTimeFormat('en-US').format(date)}</span>
             </p>
           </div>
           <div class="carousel-image">
@@ -156,10 +100,8 @@ function show(data) {
   return items;
 }
 
-// Carousel Right Side
 
-const latest_news = `https://newsdata.io/api/1/news?apikey=pub_15219c58e95ac7a128b0c6e40fc36fce1357d&language=en`;
-
+// This code is responsible for creating news section right side to the carousel
 getapi(latest_news).then((data) => {
   let template = "";
   const results = data.results;
@@ -185,31 +127,26 @@ getapi(latest_news).then((data) => {
             <a href="${
               results[i].link
             }" class="d-block text-decoration-none text-dark" target="_blank">
+              <h6>
               ${
-                results[i].title.length > 50
-                  ? `${results[i].title.substr(0, 49)}...`
-                  : results[i].title
-              }
-              
+          results[i].title.length > 50
+              ? `${results[i].title.substr(0, 49)}...`
+              : results[i].title
+                    }
+              </h6>
             </a>
             </p>
           </div>
         </div>
       ${i % 2 === 1 ? "</div>" : ""}
     `;
-
       template += item;
     }
   }
-
   document.getElementById("carousel-right").innerHTML = template;
 });
 
-// const world_news =
-//   "https://newsapi.org/v2/everything?q=art&apiKey=9b0c5f77afb34a33b22cda3433662b79&pageSize=20";
-
-var world_news = `https://gnews.io/api/v4/search?q=sports&lang=en&country=uk&max=10&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
-
+// World News Section
 getapi(world_news).then((data) => {
   let template = "";
   const results = data.articles;
@@ -218,7 +155,7 @@ getapi(world_news).then((data) => {
     if (
       results[i].image
     ) {
-      const item = `
+      let item = `
         <div class="col-lg-3 col-sm-6 grid-margin mb-5 mb-sm-2">
           <div class="position-relative image-hover" style="max-height: 200px">
           <a href="${
@@ -268,11 +205,7 @@ getapi(world_news).then((data) => {
   document.getElementById("world_news").innerHTML = template;
 });
 
-// const top_headlines =
-//   "https://newsapi.org/v2/top-headlines?country=us&apiKey=9b0c5f77afb34a33b22cda3433662b79&pageSize=25";
-
-var top_headlines = `https://gnews.io/api/v4/search?q=politics&lang=en&country=us&max=100&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
-
+// Popular News Section
 getapi(top_headlines).then(({ articles }) => {
   let template = "";
   let count = 0;
@@ -362,12 +295,11 @@ getapi(top_headlines).then(({ articles }) => {
   document.getElementById("popular_news_left").innerHTML = template;
 });
 
-var editor = `https://gnews.io/api/v4/search?q=technology&lang=en&country=uk&max=100&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
 
+// Editor Choice Section
 getapi(editor).then(({ articles }) => {
   let template = "";
   let count = 0;
-  console.log('technology', articles)
 
   for (let i = 0; i < articles.length; i++) {
     if (

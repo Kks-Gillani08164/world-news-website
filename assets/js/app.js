@@ -1,66 +1,66 @@
-$(function () {
-  // owl carousel script starts
-  if ($("#main-banner-carousel").length) {
-    $("#main-banner-carousel").owlCarousel({
-      loop: true,
-      autoplay: true,
-      autoplayTimeout: 3000,
-      autoplaySpeed: 2000,
-      autoplayHoverPause: true,
-      autoWidth: false,
-      dots: true,
-      margin: 0,
-      responsiveClass: true,
-      responsive: {
-        0: {
-          items: 1,
-        },
-        320: {
-          items: 1,
-        },
-      },
-    });
-  }
-
+window.onload = function () {
   // scroll header script here
   window.onscroll = function () {
     scrollHeader();
   };
   // Get the header
-  var header = $(".navbar-bottom-menu");
-  var body = $("body");
+  const header = document.querySelector(".navbar-bottom-menu");
+  const body = document.querySelector("body");
   function scrollHeader() {
     // adding sticky class
     if (window.pageYOffset > 105) {
-      $(header).addClass("sticky");
+      header.classList.add("sticky");
     } else {
       // removing sticky class
-      $(header).removeClass("sticky");
+      header.classList.remove("sticky");
     }
   }
 
   // navbar toggler script
-  $(".navbar-toggler").on("click", function () {
-    $(".collapse").toggleClass("show");
-    $("body").toggleClass("layer-open");
-    // $(header).toggleClass("sticky-not");
-    $(".navbar-close").show();
+  const navbarToggler = document.querySelector(".navbar-toggler");
+  navbarToggler.addEventListener("click", function () {
+    const collapse = document.querySelector(".collapse");
+    collapse.classList.toggle("show");
+    body.classList.toggle("layer-open");
+    // header.classList.toggle("sticky-not");
+    const navbarClose = document.querySelector(".navbar-close");
+    navbarClose.style.display = "block";
   });
 
-  $(".navbar-close").on("click", function () {
-    $(".collapse").toggleClass("show");
-    $(".navbar-close").hide();
-    $("body").toggleClass("layer-open");
+  const navbarClose = document.querySelector(".navbar-close");
+  navbarClose.addEventListener("click", function () {
+    const collapse = document.querySelector(".collapse");
+    collapse.classList.toggle("show");
+    navbarClose.style.display = "none";
+    body.classList.toggle("layer-open");
   });
-});
+};
 
 // Display Date
-var displayDate = $(".display-date");
-var options = {
+const displayDate = $(".display-date");
+const options = {
   weekday: "long",
   year: "numeric",
   month: "long",
   day: "numeric",
 };
-var date = new Date();
+const date = new Date();
 displayDate.text(date.toLocaleDateString("en-US", options));
+
+// Text to Speach
+
+setTimeout(() => {
+  const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+  headings.forEach(heading => {
+    const utterance = new SpeechSynthesisUtterance(heading.textContent);
+
+    heading.addEventListener('mouseover', () => {
+      window.speechSynthesis.speak(utterance);
+    });
+
+    heading.addEventListener('mouseout', () => {
+      window.speechSynthesis.cancel();
+    });
+  });
+}, 10000)
