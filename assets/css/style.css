@@ -11605,3 +11605,15 @@ font-size:14px;
 #load_more:hover {
   text-decoration: underline;
 }
+
+/*Scale*/
+.scale-up {
+  transition: all 1s ease-in-out;
+  transform: scale(1);
+}
+
+.scale-up:hover {
+  position: relative;
+  transform: scale(1.3);
+  z-index: 1000;
+}

@@ -6,6 +6,12 @@ const world_news = `https://gnews.io/api/v4/search?q=sports&lang=en&country=uk&m
 const top_headlines = `https://gnews.io/api/v4/search?q=politics&lang=en&country=us&max=100&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
 const editor = `https://gnews.io/api/v4/search?q=technology&lang=en&country=uk&max=100&apikey=55d2ce8660f4b3a80d1c625f97eaa4a3`;
 
+let dateOptions = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+};
+
 // Function to get Data from the API
 async function getapi(url) {
   // Storing response
@@ -79,7 +85,7 @@ function show(data) {
             <i class="mdi mdi-open-source-initiative mr-2"></i>
               <span class="fs-10 mr-5">${data[i].author}</span>
               <i class="mdi mdi-calendar mr-2"></i>
-              <span class="fs-10 mr-1">${new Intl.DateTimeFormat('en-US').format(date)}</span>
+              <span class="fs-10 mr-1">${new Intl.DateTimeFormat('en-US', dateOptions).format(date)}</span>
             </p>
           </div>
           <div class="carousel-image">
@@ -135,6 +141,7 @@ getapi(latest_news).then((data) => {
                     }
               </h6>
             </a>
+            <span class="h6">${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(results[i].pubDate))}</span>
             </p>
           </div>
         </div>
@@ -156,7 +163,7 @@ getapi(world_news).then((data) => {
       results[i].image
     ) {
       let item = `
-        <div class="col-lg-3 col-sm-6 grid-margin mb-5 mb-sm-2">
+        <div class="col-lg-3 col-sm-6 grid-margin mb-5 mb-sm-2 scale-up">
           <div class="position-relative image-hover" style="max-height: 200px">
           <a href="${
             results[i].url
@@ -187,6 +194,9 @@ getapi(world_news).then((data) => {
                 : `${results[i].description}`
             }
           </p>
+          <div class="mb-2">
+                <span class="h6">${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(results[i].publishedAt))}</span>
+          </div>
           <a href="${
             results[i].url
           }" target="_blank" class="font-weight-bold text-dark pt-2">
@@ -214,10 +224,11 @@ getapi(top_headlines).then(({ articles }) => {
       count === 0
     ) {
       const popular_news = `
+                <div class="scale-up">
                 <div class="position-relative image-hover">
                 <a href="${
-                  articles[0].url
-                }" class="d-block text-decoration-none text-dark" target="_blank">
+          articles[0].url
+      }" class="d-block text-decoration-none text-dark" target="_blank">
                   <img
                     src="${articles[0].image}"
                     class="img-fluid"
@@ -228,18 +239,21 @@ getapi(top_headlines).then(({ articles }) => {
                 </div>
                 <h1 class="font-weight-600 mt-3">
                   ${
-                    articles[0].title.length > 50
-                      ? `${articles[0].title.substr(0, 50)} ...`
-                      : `${articles[0].title}`
-                  }
+          articles[0].title.length > 50
+              ? `${articles[0].title.substr(0, 50)} ...`
+              : `${articles[0].title}`
+      }
                 </h1>
                 <p class="fs-15 font-weight-normal">
                   ${
-                    articles[0].description.length > 127
-                      ? `${articles[0].description.substr(0, 127)}...`
-                      : `${articles[0].description}`
-                  }
-                </p>`;
+          articles[0].description.length > 127
+              ? `${articles[0].description.substr(0, 127)}...`
+              : `${articles[0].description}`
+      }
+                </p>
+                <span class="h6">${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(articles[0].publishedAt))}</span>
+</div>
+`;
       document.getElementById("popular_news_right").innerHTML = popular_news;
       count++;
     }
@@ -251,7 +265,7 @@ getapi(top_headlines).then(({ articles }) => {
     ) {
       let item = `
       ${count % 2 === 0 ? '<div class="row">' : ""}
-        <div class="col-sm-6 mb-5 mb-sm-2">
+        <div class="col-sm-6 mb-5 mb-sm-2 scale-up">
             <div class="position-relative image-hover" style="max-height: 200px">
             <a href="${
               articles[i].url
@@ -283,6 +297,7 @@ getapi(top_headlines).then(({ articles }) => {
                   : `${articles[i].description}`
               }
             </p>
+            <span class="h6">${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(articles[i].publishedAt))}</span>
           </div>
       ${count % 2 === 1 ? "</div>" : ""}
     `;
@@ -300,6 +315,7 @@ getapi(top_headlines).then(({ articles }) => {
 getapi(editor).then(({ articles }) => {
   let template = "";
   let count = 0;
+  console.log(articles)
 
   for (let i = 0; i < articles.length; i++) {
     if (
@@ -307,7 +323,7 @@ getapi(editor).then(({ articles }) => {
     ) {
       let item = `
       ${count === 0 || count === 3 ? '<div class="row">' : ""}
-                  <div class="col-sm-4 mb-5 mb-sm-2">
+                  <div class="col-sm-4 mb-5 mb-sm-2 scale-up">
                     <div class="position-relative image-hover" style="max-height: 200px">
                     <a href="${
                       articles[i].url
@@ -331,6 +347,7 @@ getapi(editor).then(({ articles }) => {
                           : `${articles[i].title}`
                       }
                     </h5>
+                    <span class="h6">${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(articles[i].publishedAt))}</span>
                   </div>
                   ${count === 2 || count === 5 ? "</div>" : ""}
     `;
