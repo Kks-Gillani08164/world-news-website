@@ -119,7 +119,7 @@ getapi(latest_news).then((data) => {
         <div class="py-3 border-bottom">
           <div class="d-flex align-items-center pb-2">
               <img
-                src="assets/images/dashboard/Profile_${i + 1}.jpg"
+                src="assets/images/user/Profile_${i + 1}.jpg"
                 class="img-xs img-rounded mr-2"
                 alt="thumb"
               />
@@ -315,7 +315,6 @@ getapi(top_headlines).then(({ articles }) => {
 getapi(editor).then(({ articles }) => {
   let template = "";
   let count = 0;
-  console.log(articles)
 
   for (let i = 0; i < articles.length; i++) {
     if (

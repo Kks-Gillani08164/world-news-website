@@ -54,6 +54,7 @@ setTimeout(() => {
 
   headings.forEach(heading => {
     const utterance = new SpeechSynthesisUtterance(heading.textContent);
+    utterance.rate = 0.6
 
     heading.addEventListener('mouseover', () => {
       window.speechSynthesis.speak(utterance);
